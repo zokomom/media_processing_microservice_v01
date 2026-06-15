@@ -1,5 +1,5 @@
 from fastapi import APIRouter,UploadFile, File
-from services.image_service import resize_image
+from ..services.image_service import resize_image
 
 router = APIRouter()
 
