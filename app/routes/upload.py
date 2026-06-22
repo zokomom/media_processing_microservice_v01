@@ -5,7 +5,7 @@ import uuid
 
 router = APIRouter()
 
-@router.post("/upload",status_code=201)
+@router.post("/upload",status_code=status.HTTP_201_CREATED)
 async def upload_file(file: UploadFile = File(...)):
 
     extension = file.filename.split(".")[-1]
