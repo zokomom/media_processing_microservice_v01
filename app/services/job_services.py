@@ -21,3 +21,26 @@ def create_job():
         })
     )
     return job_id
+
+
+def update_job_status(job_id: str, status: str):
+    job = redis_client.get(job_id)
+
+    if not job:
+        return
+
+    job = json.loads(job)
+
+    job["status"] = status
+
+    redis_client.set(
+        job_id,
+        json.dumps(job)
+    )
+
+
+def get_job(job_id: str):
+    job = redis_client.get(job_id)
+    if not job:
+        return None
+    return json.loads(job)
