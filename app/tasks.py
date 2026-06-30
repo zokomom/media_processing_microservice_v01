@@ -7,14 +7,14 @@ from app.services.image_service import (
 
 
 @celery_app.task
-def process_image(filename):
+def process_image(filename, job_id):
     print(f"Processing image: {filename}")
     resize_image(filename)
     print(f"Completed image: {filename}")
 
 
 @celery_app.task
-def process_video(filename):
+def process_video(filename, job_id):
     print(f"Processing video: {filename}")
     compress_video(filename)
     generate_thumbnail(filename)
