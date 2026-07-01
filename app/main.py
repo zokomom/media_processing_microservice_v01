@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from .routes import upload
+from .routes import upload, jobs
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins=['*']
+origins = ['*']
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,8 +14,11 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+
 @app.get("/")
 def root():
-    return {"message":"Hello this is media processing API"}
+    return {"message": "Hello this is media processing API"}
+
 
 app.include_router(upload.router)
+app.include_router(jobs.router)
