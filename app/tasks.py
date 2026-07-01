@@ -7,22 +7,25 @@ from app.services.image_service import (
 from .services.job_services import update_job_status
 
 
-@celery_app.task
-def process_image(filename, job_id):
-    update_job_status(job_id, "processing")
+@celery_app.task(bind=True, max_retries=3)
+def process_image(self, filename, job_id):
     try:
         print(f"Processing image: {filename}")
         resize_image(filename)
         update_job_status(job_id, "completed")
         print(f"Completed image: {filename}")
     except Exception as e:
-        update_job_status(job_id, "failed")
-        print(f"Error while processing {filename}: {e}")
-        raise
+        if self.request.retries >= self.max_retries:
+            print("Maximum retries exceeded.")
+            update_job_status(job_id, "failed")
+            raise
+
+        print(f"Retry #{self.request.retries + 1}")
+        raise self.retry(exc=e, countdown=5)
 
 
-@celery_app.task
-def process_video(filename, job_id):
+@celery_app.task(bind=True, max_retries=3)
+def process_video(self, filename, job_id):
     update_job_status(job_id, "processing")
     try:
         print(f"Processing video: {filename}")
@@ -31,6 +34,10 @@ def process_video(filename, job_id):
         update_job_status(job_id, "completed")
         print(f"Completed video: {filename}")
     except Exception as e:
-        update_job_status(job_id, "failed")
-        print(f"Error while processing {filename}: {e}")
-        raise
+        if self.request.retries >= self.max_retries:
+            print("Maximum retries exceeded.")
+            update_job_status(job_id, "failed")
+            raise
+
+        print(f"Retry #{self.request.retries + 1}")
+        raise self.retry(exc=e, countdown=5)
