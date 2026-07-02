@@ -20,7 +20,7 @@ def resize_image(filename):
 
     local_output = f"/tmp/processed_{filename}"
 
-    img.save(local_output)
+    img.save(local_output, optimize=True, quality=75)
 
     upload_to_s3(
         local_output,
