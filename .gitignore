@@ -6,3 +6,5 @@ __pycache__/
 *.png
 *.mov
 *.mp4
+*.txt
+*.pdf
