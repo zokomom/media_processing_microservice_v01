@@ -28,16 +28,21 @@ async def upload_file(file: UploadFile = File(...)):
         local_path,
         f"uploads/{filename}"
     )
-
-    if file.content_type.startswith("image/"):
-        process_image.delay(filename, job_id)
-    elif file.content_type.startswith("video/"):
-        process_video.delay(filename, job_id)
-    else:
+    ALLOWED_TYPES = {
+        "image/jpeg",
+        "image/png",
+        "video/mp4"
+    }
+    if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Unsupported file type"
         )
+    elif file.content_type.startswith("image/"):
+        process_image.delay(filename, job_id)
+    else:
+        process_video.delay(filename, job_id)
+
     return {
         "message": "File uploaded successfully",
         "job_id": job_id,

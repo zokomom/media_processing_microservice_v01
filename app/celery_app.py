@@ -1,7 +1,8 @@
 from celery import Celery
+from .config import REDIS_URL
 
 celery_app = Celery(
     "media_tasks",
-    broker="redis://localhost:6379/0",
+    broker=REDIS_URL,
     include=["app.tasks"]
 )
