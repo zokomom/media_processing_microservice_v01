@@ -1,20 +1,21 @@
 from PIL import Image
 import ffmpeg
 from ..services.s3_client import upload_to_s3, download_from_s3
+from ..utils.img_utils import crop_center, resize_to_square, add_watermark
 
 
 def resize_image(filename):
 
     local_input = f"/tmp/{filename}"
 
-    download_from_s3(
-        f"uploads/{filename}",
-        local_input
-    )
-
+    download_from_s3(f"uploads/{filename}", local_input)
     img = Image.open(local_input)
 
-    img = img.resize((500, 500))
+    img = crop_center(img)
+
+    img = resize_to_square(img)
+
+    img = add_watermark(img)
 
     img.save(f"app/processed/{filename}")
 
