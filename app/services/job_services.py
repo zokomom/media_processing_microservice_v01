@@ -23,7 +23,7 @@ def create_job():
     return job_id
 
 
-def update_job_status(job_id: str, status: str):
+def update_job_status(job_id: str, status: str,**kwargs):
     job = redis_client.get(job_id)
 
     if not job:
@@ -32,6 +32,8 @@ def update_job_status(job_id: str, status: str):
     job = json.loads(job)
 
     job["status"] = status
+
+    job.update(kwargs)
 
     redis_client.set(
         job_id,

@@ -20,3 +20,13 @@ def download_from_s3(s3_key, local_path):
         s3_key,
         local_path
     )
+
+def generate_presigned_url(s3_key):
+    return s3.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={
+            "Bucket": S3_BUCKET_NAME,
+            "Key": s3_key
+        },
+        ExpiresIn=3600
+    )

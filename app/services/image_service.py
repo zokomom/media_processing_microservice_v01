@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image,ImageOps
 import ffmpeg
 from ..services.s3_client import upload_to_s3, download_from_s3
 from ..utils.img_utils import crop_center, resize_to_square, add_watermark
@@ -12,6 +12,9 @@ def resize_image(filename):
 
     download_from_s3(f"uploads/{filename}", local_input)
     with Image.open(local_input) as img:
+        img.save("/tmp/debug.jpg")
+        img = ImageOps.exif_transpose(img)
+
         img = crop_center(img)
         img = resize_to_square(img)
         img = add_watermark(img)
