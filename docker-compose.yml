@@ -1,0 +1,39 @@
+services:
+
+  api:
+    build: .
+    container_name: media-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    volumes:
+      - ~/.aws:/root/.aws:ro
+    depends_on:
+      - redis
+      - rabbitmq
+
+  worker:
+    build: .
+    container_name: media-worker
+    command: celery -A app.celery_app:celery_app worker --loglevel=info
+    env_file:
+      - .env.docker
+    volumes:
+      - ~/.aws:/root/.aws:ro
+    depends_on:
+      - redis
+      - rabbitmq
+
+  redis:
+    image: redis:7-alpine
+    container_name: media-redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: media-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"

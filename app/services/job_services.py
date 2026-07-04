@@ -1,11 +1,10 @@
 import redis
 import json
 import uuid
+from app.config import REDIS_URL
 
-redis_client = redis.Redis(
-    host="localhost",
-    port=6379,
-    db=1,
+redis_client = redis.from_url(
+    REDIS_URL,
     decode_responses=True
 )
 
