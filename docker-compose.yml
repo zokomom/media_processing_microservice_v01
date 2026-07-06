@@ -37,3 +37,14 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  
+  prometheus:
+    image: prom/prometheus
+    container_name: media-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
+      - rabbitmq

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .routes import upload, jobs
 from fastapi.middleware.cors import CORSMiddleware
-
+from prometheus_fastapi_instrumentator import Instrumentator
 app = FastAPI()
 
 origins = ['*']
@@ -22,3 +22,5 @@ def root():
 
 app.include_router(upload.router)
 app.include_router(jobs.router)
+
+Instrumentator().instrument(app).expose(app)
