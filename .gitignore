@@ -10,3 +10,5 @@ __pycache__/
 *.pdf
 .env
 .env.docker
+!images/
+!images/*.png
